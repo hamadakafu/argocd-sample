@@ -1,5 +1,5 @@
 # ArogCD
-
+![hoge](sample-img.png)
 ## デプロイするとき
 namespace=argocdを作成する
 
