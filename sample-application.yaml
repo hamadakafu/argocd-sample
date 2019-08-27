@@ -1,17 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
-kind: AppProject
+kind: Application
 metadata:
-  name: my-project
+  name: sample-app
   namespace: argocd
 spec:
-  description: Example project
+  project: default
   source:
     repoURL: https://github.com/hamadakafu/argocd-sample
     targetRevision: master
     path: sample-helm-chart
     helm:
-      releaseName: myRelease
+      releaseName: my-release
   
-  destinations:
-    - namespace: default
-      server: https://kubernetes.default.svc
+  destination:
+    namespace: default
+    server: https://kubernetes.default.svc
+
+  syncPolicy:
+    automated: {}

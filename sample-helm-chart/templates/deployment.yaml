@@ -22,7 +22,8 @@ spec:
     {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          # image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: nginxdemos/hello
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http

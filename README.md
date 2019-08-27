@@ -55,3 +55,5 @@ known_hostsを設定する
 github.comとかの設定をする
 [sample](https://argoproj.github.io/argo-cd/operator-manual/argocd-ssh-known-hosts-cm.yaml)
 
+## sample application yaml
+[sample](https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/application.yaml)
