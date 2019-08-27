@@ -39,6 +39,7 @@ argocd create app [appname] ...
 ## configmap/argocd-cm
 argocdの基本的なconfigmapを含む
 minikubeにを使ってやったとき特に大したことは書かれていなかった
+helmのrepositoryとか置ける
 
 ## configmap/argocd-rbac-cm
 argocdのrbacの設定を含む
