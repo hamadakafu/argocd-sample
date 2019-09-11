@@ -26,7 +26,7 @@ spec:
             - "json"
             - "> /tmp/argoinfo"
         - name: echo-container
-          image: gcr.io/cloud-builders/jq
+          image: stedolan/jq
           command: 
             - "/bin/bash"
           args:
@@ -79,7 +79,7 @@ spec:
             - "json"
             - "> /tmp/argoinfo"
         - name: echo-container
-          image: gcr.io/cloud-builders/jq
+          image: stedolan/jq
           command: 
             - "/bin/bash"
           args:
@@ -132,7 +132,7 @@ spec:
             - "json"
             - "> /tmp/argoinfo"
         - name: echo-container
-          image: gcr.io/cloud-builders/jq
+          image: stedolan/jq
           command: 
             - "/bin/bash"
           args:
