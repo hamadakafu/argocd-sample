@@ -10,6 +10,8 @@ spec:
     repoURL: https://github.com/hamadakafu/argocd-sample.git
     targetRevision: master
     path: applications
+  helm:
+    releaseName: applications
 
   destination:
     namespace: default
