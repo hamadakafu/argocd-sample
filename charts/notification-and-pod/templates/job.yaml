@@ -47,14 +47,7 @@ spec:
                 ]
               }
             - "https://hooks.slack.com/services/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"
-
-          volumeMounts:
-            - name: config-volume
-              mountPath: /slack
-      volumes:
-        - name: config-volume
-          configMap:
-            name: notify-configmap
+        # - technosophos/slack-notify
       restartPolicy: Never
 
 ---
@@ -108,13 +101,6 @@ spec:
               }
             - "https://hooks.slack.com/services/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"
 
-          volumeMounts:
-            - name: config-volume
-              mountPath: /slack
-      volumes:
-        - name: config-volume
-          configMap:
-            name: notify-configmap
       restartPolicy: Never
 
 ---
@@ -168,11 +154,4 @@ spec:
               }
             - "https://hooks.slack.com/services/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"
 
-          volumeMounts:
-            - name: config-volume
-              mountPath: /slack
-      volumes:
-        - name: config-volume
-          configMap:
-            name: notify-configmap
       restartPolicy: Never
