@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/hamadakafu/argocd-sample
+    repoURL: https://github.com/hamadakafu/argocd-sample.git
     targetRevision: master
     path: charts/sample-helm-chart
     helm:
