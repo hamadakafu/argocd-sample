@@ -15,11 +15,12 @@ spec:
         - name: echo-container
           image: appropriate/curl:latest
           command: ["curl"] 
-          args: |
-            -X POST \
-            --data-urlencode \
-            "payload={\"channel\": \"#general\", \"username\": \"webhookbot\", \"text\": \"これは webhookbot という名のボットから #general に投稿されています。\", \"icon_emoji\": \":ghost:\"}" \
-            https://hooks.slack.com/services/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
+          args:
+            - "-X" 
+            - "POST"
+            - "--data-urlencode"
+            - "payload={\"channel\": \"#general\", \"username\": \"webhookbot\", \"text\": \"これは argocd の presync のボットから #general に投稿されています。\", \"icon_emoji\": \":ghost:\"}"
+            - https://hooks.slack.com/services/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
 
       restartPolicy: Never
 
