@@ -1,11 +1,11 @@
 apiVersion: batch/v1 
 kind: Job
 metadata:
-  name: sample-hogehoge
-  generateName: sample-hogehoge
-  # annotations:
-  #   argocd.argoproj.io/hook: PostSync
-  #   argocd.argoproj.io/hook-delete-policy: HookSucceeded
+  name: before
+  generateName: before-
+  annotations:
+    argocd.argoproj.io/hook: PreSync 
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
 spec:
   completions: 1 
   parallelism: 1 
@@ -13,23 +13,25 @@ spec:
   template:
     spec:
       containers:
-        - name: sleep-container
-          image: centos:6 
+        - name: echo-container
+          image: alpine:latest
           command: ["echo"] 
           args: ["fack you"]
-      restartPolicy: Never
 
 ---
-apiVersion: v1
+apiVersion: batch/v1
 kind: Job
 metadata:
-  creationTimestamp: null
-  labels:
-    run: pod
-  name: pod
+  name: after
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
 spec:
-  containers:
-    - image: centos:7
-      name: pod
-      command: ["echo"]
-      args: ["you are you"]
+  template:
+    spec:
+      containers:
+      - name: sleep
+        image: alpine:latest
+        command: ["sleep", "10"]
+      restartPolicy: Never
+  backoffLimit: 0
