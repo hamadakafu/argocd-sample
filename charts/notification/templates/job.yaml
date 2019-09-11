@@ -18,3 +18,18 @@ spec:
           command: ["echo"] 
           args: ["fack you"]
       restartPolicy: Never
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: pod
+  name: pod
+spec:
+  containers:
+    - image: centos:7
+      name: pod
+      command: ["echo"]
+      args: ["you are you"]
