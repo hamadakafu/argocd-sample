@@ -1,16 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: sample-helm-chart
+  name: notification
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/hamadakafu/argocd-sample
     targetRevision: master
-    path: sample-helm-chart
+    path: charts/notification
     helm:
-      releaseName: sample-helm-chart
+      releaseName: notification
 
   destination:
     namespace: default
