@@ -1,7 +1,7 @@
 apiVersion: batch/v1 
 kind: Job
 metadata:
-  generateName: notification-chart-before-
+  generateName: notification-jon-before-
   annotations:
     argocd.argoproj.io/hook: PreSync 
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
@@ -19,15 +19,16 @@ spec:
             - "-X" 
             - "POST"
             - "--data-urlencode"
-            - "payload={\"channel\": \"#general\", \"username\": \"webhookbot\", \"text\": \"私はnotificationチャートにいるpresyncです\"}"
+            - "payload={\"channel\": \"#general\", \"username\": \"webhookbot\", \"text\": \"私はnotification-job.yamlにいるpresyncです\"}"
             - https://hooks.slack.com/services/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
+
       restartPolicy: Never
 
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  generateName: notification-chart-after-
+  generateName: notification-jon-after-
   annotations:
     argocd.argoproj.io/hook: PostSync
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
@@ -42,7 +43,8 @@ spec:
             - "-X" 
             - "POST"
             - "--data-urlencode"
-            - "payload={\"channel\": \"#general\", \"username\": \"webhookbot\", \"text\": \"私はnotificationチャートにいるpostsyncです\"}"
+            - "payload={\"channel\": \"#general\", \"username\": \"webhookbot\", \"text\": \"私はnotification-job.yamlにいるpostsyncです\"}"
             - https://hooks.slack.com/services/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
+
       restartPolicy: Never
   backoffLimit: 0
