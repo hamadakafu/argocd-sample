@@ -1,7 +1,6 @@
 apiVersion: batch/v1 
 kind: Job
 metadata:
-  name: before
   generateName: before-
   annotations:
     argocd.argoproj.io/hook: PreSync 
@@ -14,16 +13,21 @@ spec:
     spec:
       containers:
         - name: echo-container
-          image: alpine:latest
-          command: ["echo"] 
-          args: ["fack you"]
+          image: appropriate/curl:latest
+          command: ["curl"] 
+          args: |
+            -X POST \
+            --data-urlencode \
+            "payload={\"channel\": \"#general\", \"username\": \"webhookbot\", \"text\": \"これは webhookbot という名のボットから #general に投稿されています。\", \"icon_emoji\": \":ghost:\"}" \
+            https://hooks.slack.com/services/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
+
       restartPolicy: Never
 
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: after
+  generateName: after
   annotations:
     argocd.argoproj.io/hook: PostSync
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
