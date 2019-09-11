@@ -2,6 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   generateName: presync-
+  namespace: argocd
   annotations:
     argocd.argoproj.io/hook: PreSync 
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
@@ -55,6 +56,7 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
+  namespace: argocd
   generateName: postsync-
   annotations:
     argocd.argoproj.io/hook: PostSync
