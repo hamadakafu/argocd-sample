@@ -11,44 +11,44 @@ spec:
   backoffLimit: 1
   template:
     spec:
+      serviceAccount: argocd-server
+      volumes:
+        - name: shared-data
+          emptyDir: {}
       containers:
         - name: kubectl
           image: gcr.io/cloud-builders/kubectl
-          command:
-            - "kubectl"
+          command: ["/bin/bash", "-c"]
           args:
-            - "get"
-            - "-n"
-            - "argocd"
-            - "applications.argoproj.io"
-            - "sample-application"
-            - "-o"
-            - "json"
-            - "> /tmp/argoinfo"
-        - name: echo-container
-          image: stedolan/jq
-          command: 
-            - "/bin/bash"
-          args:
-            - "curl"
-            - "-X"
-            - "POST" 
-            - "-d"
             - |
-              {
-                "channel": "#general", 
-                "username": "gheo", 
-                "attachments": [
-                  {
-                    "title": "PreSync", 
-                    "text": "Application: *notifier*\nBranch: *$(cat /tmp/argoinfo | jq -r '.spec.source.targetRevision')*",
-                    "color": "#439FE0"
-                  }
-                ]
-              }
-            - "https://hooks.slack.com/services/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"
-        #- technosophos/slack-notify
-      restartPolicy: Never
+              cat "Applicatin: {{ template "notification-and-pod.name" . }}, " && \
+              cat "TargetRevision: " >> /shared-data/SLACK_MESSAGE && \
+              kubectl get applications.argoproj.io sample-application -n argocd \
+              -o jsonpath='{.spec.source.targetRevision}' >> /shared-data/SLACK_MESSAGE
+
+          volumeMounts:
+            - name: shared-data
+              mountPath: /shared-data
+
+        - name: slack-notify
+          image: technosophos/slack-notify
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              SLACK_MESSAGE=$(cat /shared-data/SLACK_MESSAGE) /slack-notify
+          env:
+            - name: SLACK_WEBHOOK
+              value: "https://hooks.slack.com/services/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"
+            - name: SLACK_CHANNEL
+              value: "#general"
+            - name: SLACK_TITLE
+              value: PreSync
+            - name: SLACK_COLOR
+              value: "#439FE0"
+          volumeMounts:
+            - name: shared-data
+              mountPath: /shared-data
+
 
 ---
 apiVersion: batch/v1
@@ -64,50 +64,50 @@ spec:
   backoffLimit: 1
   template:
     spec:
+      serviceAccount: argocd-server
+      volumes:
+        - name: shared-data
+          emptyDir: {}
       containers:
         - name: kubectl
           image: gcr.io/cloud-builders/kubectl
-          command:
-            - "kubectl"
+          command: ["/bin/bash", "-c"]
           args:
-            - "get"
-            - "-n"
-            - "argocd"
-            - "applications.argoproj.io"
-            - "sample-application"
-            - "-o"
-            - "json"
-            - "> /tmp/argoinfo"
-        - name: echo-container
-          image: stedolan/jq
-          command: 
-            - "/bin/bash"
-          args:
-            - "curl"
-            - "-X"
-            - "POST" 
-            - "-d"
             - |
-              {
-                "channel": "#general", 
-                "username": "gheo", 
-                "attachments": [
-                  {
-                    "title": "PostSync", 
-                    "text": "Application: *notifier*\nBranch: *$(cat /tmp/argoinfo | jq -r '.spec.source.targetRevision')*",
-                    "color": "Good"
-                  }
-                ]
-              }
-            - "https://hooks.slack.com/services/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"
+              cat "Applicatin: {{ template "notification-and-pod.name" . }}, " && \
+              cat "TargetRevision: " >> /shared-data/SLACK_MESSAGE && \
+              kubectl get applications.argoproj.io sample-application -n argocd \
+              -o jsonpath='{.spec.source.targetRevision}' >> /shared-data/SLACK_MESSAGE
 
-      restartPolicy: Never
+          volumeMounts:
+            - name: shared-data
+              mountPath: /shared-data
+
+        - name: slack-notify
+          image: technosophos/slack-notify
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              SLACK_MESSAGE=$(cat /shared-data/SLACK_MESSAGE) /slack-notify
+          env:
+            - name: SLACK_WEBHOOK
+              value: "https://hooks.slack.com/services/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"
+            - name: SLACK_CHANNEL
+              value: "#general"
+            - name: SLACK_TITLE
+              value: PostSync
+            - name: SLACK_COLOR
+              value: Good
+          volumeMounts:
+            - name: shared-data
+              mountPath: /shared-data
 
 ---
 apiVersion: batch/v1 
 kind: Job
 metadata:
   generateName: syncfail-
+  namespace: argocd
   annotations:
     argocd.argoproj.io/hook: SyncFail
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
@@ -117,41 +117,42 @@ spec:
   backoffLimit: 1
   template:
     spec:
+      serviceAccount: argocd-server
+      volumes:
+        - name: shared-data
+          emptyDir: {}
       containers:
         - name: kubectl
           image: gcr.io/cloud-builders/kubectl
-          command:
-            - "kubectl"
+          command: ["/bin/bash", "-c"]
           args:
-            - "get"
-            - "-n"
-            - "argocd"
-            - "applications.argoproj.io"
-            - "sample-application"
-            - "-o"
-            - "json"
-            - "> /tmp/argoinfo"
-        - name: echo-container
-          image: stedolan/jq
-          command: 
-            - "/bin/bash"
-          args:
-            - "curl"
-            - "-X"
-            - "POST" 
-            - "-d"
             - |
-              {
-                "channel": "#general", 
-                "username": "gheo", 
-                "attachments": [
-                  {
-                    "title": "SyncFail", 
-                    "text": "Application: *notifier*\nBranch: *$(cat /tmp/argoinfo | jq -r '.spec.source.targetRevision')*",
-                    "color": "Danger"
-                  }
-                ]
-              }
-            - "https://hooks.slack.com/services/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"
+              cat "Applicatin: {{ template "notification-and-pod.name" . }}, " && \
+              cat "TargetRevision: " >> /shared-data/SLACK_MESSAGE && \
+              kubectl get applications.argoproj.io sample-application -n argocd \
+              -o jsonpath='{.spec.source.targetRevision}' >> /shared-data/SLACK_MESSAGE
+
+          volumeMounts:
+            - name: shared-data
+              mountPath: /shared-data
+
+        - name: slack-notify
+          image: technosophos/slack-notify
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              SLACK_MESSAGE=$(cat /shared-data/SLACK_MESSAGE) /slack-notify
+          env:
+            - name: SLACK_WEBHOOK
+              value: "https://hooks.slack.com/services/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"
+            - name: SLACK_CHANNEL
+              value: "#general"
+            - name: SLACK_TITLE
+              value: SyncFailed
+            - name: SLACK_COLOR
+              value: Danger
+          volumeMounts:
+            - name: shared-data
+              mountPath: /shared-data
 
       restartPolicy: Never
