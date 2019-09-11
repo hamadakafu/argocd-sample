@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: sample-app
+  name: sample-helm-chart
   namespace: argocd
 spec:
   project: default
@@ -10,11 +10,12 @@ spec:
     targetRevision: master
     path: sample-helm-chart
     helm:
-      releaseName: my-release
-  
+      releaseName: sample-helm-chart
+
   destination:
     namespace: default
     server: https://kubernetes.default.svc
 
   syncPolicy:
     automated: {}
+
