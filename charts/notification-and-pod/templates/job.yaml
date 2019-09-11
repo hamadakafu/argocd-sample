@@ -1,7 +1,7 @@
 apiVersion: batch/v1 
 kind: Job
 metadata:
-  generateName: notification-chart-before-
+  generateName: presync-
   annotations:
     argocd.argoproj.io/hook: PreSync 
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
@@ -47,14 +47,14 @@ spec:
                 ]
               }
             - "https://hooks.slack.com/services/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"
-        # - technosophos/slack-notify
+        #- technosophos/slack-notify
       restartPolicy: Never
 
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  generateName: notification-chart-after-
+  generateName: postsync-
   annotations:
     argocd.argoproj.io/hook: PostSync
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
@@ -65,7 +65,7 @@ spec:
   template:
     spec:
       containers:
-        - name: kubectl get application info
+        - name: kubectl
           image: gcr.io/cloud-builders/kubectl
           command:
             - "kubectl"
@@ -107,7 +107,7 @@ spec:
 apiVersion: batch/v1 
 kind: Job
 metadata:
-  generateName: notification-chart-before-
+  generateName: syncfail-
   annotations:
     argocd.argoproj.io/hook: SyncFail
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
@@ -118,7 +118,7 @@ spec:
   template:
     spec:
       containers:
-        - name: kubectl get application info
+        - name: kubectl
           image: gcr.io/cloud-builders/kubectl
           command:
             - "kubectl"
