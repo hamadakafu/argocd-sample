@@ -19,7 +19,7 @@ spec:
             - "-X" 
             - "POST"
             - "--data-urlencode"
-            - "payload={\"channel\": \"#general\", \"username\": \"webhookbot\", \"text\": \"私はnotificationチャートにいるpresyncです\"}"
+            - "payload={\"channel\": \"#general\", \"username\": \"webhookbot\", \"text\": \"私はnotification-and-podチャートにいるpresyncです\"}"
             - https://hooks.slack.com/services/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
       restartPolicy: Never
 
@@ -42,7 +42,7 @@ spec:
             - "-X" 
             - "POST"
             - "--data-urlencode"
-            - "payload={\"channel\": \"#general\", \"username\": \"webhookbot\", \"text\": \"私はnotificationチャートにいるpostsyncです\"}"
+            - "payload={\"channel\": \"#general\", \"username\": \"webhookbot\", \"text\": \"私はnotification-and-podチャートにいるpostsyncです\"}"
             - https://hooks.slack.com/services/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
       restartPolicy: Never
   backoffLimit: 0

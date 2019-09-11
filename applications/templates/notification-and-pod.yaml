@@ -8,9 +8,9 @@ spec:
   source:
     repoURL: https://github.com/hamadakafu/argocd-sample.git
     targetRevision: master
-    path: charts/notification
+    path: charts/notification-and-pod
     helm:
-      releaseName: notification
+      releaseName: notification-and-pod
 
   destination:
     namespace: default
