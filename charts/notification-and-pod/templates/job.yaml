@@ -12,7 +12,7 @@ spec:
   template:
     spec:
       containers:
-        - name: kubectl get application info
+        - name: kubectl
           image: gcr.io/cloud-builders/kubectl
           command:
             - "kubectl"
