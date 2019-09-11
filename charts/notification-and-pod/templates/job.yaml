@@ -80,8 +80,21 @@ spec:
   template:
     spec:
       containers:
-        - name: echo-container
+        - name: kubectl get application info
           image: gcr.io/cloud-builders/kubectl
+          command:
+            - "kubectl"
+          args:
+            - "get"
+            - "-n"
+            - "argocd"
+            - "applications.argoproj.io"
+            - "sample-application"
+            - "-o"
+            - "json"
+            - "> /tmp/argoinfo"
+        - name: echo-container
+          image: gcr.io/cloud-builders/jq
           command: 
             - "/bin/bash"
           args:

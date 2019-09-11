@@ -18,8 +18,6 @@ data:
 
     APPLICATION={{ template "notification-and-pod.fullname" . }}
 
-    TARGET_REVISION=$(kubectl get applications.argoproj.io sample-application -n argocd -o json | jq -r '.spec.source.targetRevision')
+    TARGET_REVISION=$(cat /tmp/argoinfo | jq -r '.spec.source.targetRevision')
 
-    curl -X POST -d \
-    '{"channel": "${channel}", "username": "gheo", "attachments": [{"title": "${title}", "text": "Application: *${APPLICATION}*\nBranch: *${TARGET_REVISION}*"}]}' \
-    ${slack_url}
+    curl -X POST -d '{"channel": "${channel}", "username": "gheo", "attachments": [{"title": "${title}", "text": "Application: *${APPLICATION}*\nBranch: *${TARGET_REVISION}*"}]}' ${slack_url}
