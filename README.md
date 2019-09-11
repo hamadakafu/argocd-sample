@@ -62,3 +62,7 @@ github.comとかの設定をする
 ### 同じアプリケーションは以下に置く必要がある
 ### restartPolicyにAlwaysは指定できな:w
 `Never` か `OnFailure` の場合のみ可能
+### アノテーション付いてるやつを変更しても
+syncは動かないっぽい
+hookも動かない
+
