@@ -12,16 +12,42 @@ spec:
   template:
     spec:
       containers:
-        - name: echo-container
+        - name: kubectl get application info
           image: gcr.io/cloud-builders/kubectl
+          command:
+            - "kubectl"
+          args:
+            - "get"
+            - "-n"
+            - "argocd"
+            - "applications.argoproj.io"
+            - "sample-application"
+            - "-o"
+            - "json"
+            - "> /tmp/argoinfo"
+        - name: echo-container
+          image: gcr.io/cloud-builders/jq
           command: 
             - "/bin/bash"
           args:
-            - "/slack/notify.sh"
+            - "curl"
+            - "-X"
+            - "POST" 
+            - "-d"
+            - |
+              {
+                "channel": "#general", 
+                "username": "gheo", 
+                "attachments": [
+                  {
+                    "title": "PreSync", 
+                    "text": "Application: *notifier*\nBranch: *$(cat /tmp/argoinfo | jq -r '.spec.source.targetRevision')*",
+                    "color": "#439FE0"
+                  }
+                ]
+              }
             - "https://hooks.slack.com/services/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"
-            - "#general"
-            - "StartSync"
-            - "#439FE0"
+
           volumeMounts:
             - name: config-volume
               mountPath: /slack
@@ -46,16 +72,42 @@ spec:
   template:
     spec:
       containers:
-        - name: echo-container
+        - name: kubectl get application info
           image: gcr.io/cloud-builders/kubectl
           command:
+            - "kubectl"
+          args:
+            - "get"
+            - "-n"
+            - "argocd"
+            - "applications.argoproj.io"
+            - "sample-application"
+            - "-o"
+            - "json"
+            - "> /tmp/argoinfo"
+        - name: echo-container
+          image: gcr.io/cloud-builders/jq
+          command: 
             - "/bin/bash"
           args:
-            - "/slack/notify.sh"
+            - "curl"
+            - "-X"
+            - "POST" 
+            - "-d"
+            - |
+              {
+                "channel": "#general", 
+                "username": "gheo", 
+                "attachments": [
+                  {
+                    "title": "PostSync", 
+                    "text": "Application: *notifier*\nBranch: *$(cat /tmp/argoinfo | jq -r '.spec.source.targetRevision')*",
+                    "color": "Good"
+                  }
+                ]
+              }
             - "https://hooks.slack.com/services/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"
-            - "#general"
-            - "PostSync"
-            - "Good"
+
           volumeMounts:
             - name: config-volume
               mountPath: /slack
@@ -98,11 +150,24 @@ spec:
           command: 
             - "/bin/bash"
           args:
-            - "/slack/notify.sh"
+            - "curl"
+            - "-X"
+            - "POST" 
+            - "-d"
+            - |
+              {
+                "channel": "#general", 
+                "username": "gheo", 
+                "attachments": [
+                  {
+                    "title": "SyncFail", 
+                    "text": "Application: *notifier*\nBranch: *$(cat /tmp/argoinfo | jq -r '.spec.source.targetRevision')*",
+                    "color": "Danger"
+                  }
+                ]
+              }
             - "https://hooks.slack.com/services/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"
-            - "#general"
-            - "SyncFail"
-            - "Danger"
+
           volumeMounts:
             - name: config-volume
               mountPath: /slack
