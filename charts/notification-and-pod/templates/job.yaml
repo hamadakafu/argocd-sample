@@ -11,6 +11,7 @@ spec:
   backoffLimit: 1
   template:
     spec:
+      restartPolicy: Never
       serviceAccount: argocd-server
       volumes:
         - name: shared-data
@@ -64,6 +65,7 @@ spec:
   backoffLimit: 1
   template:
     spec:
+      restartPolicy: Never
       serviceAccount: argocd-server
       volumes:
         - name: shared-data
@@ -117,6 +119,7 @@ spec:
   backoffLimit: 1
   template:
     spec:
+      restartPolicy: Never
       serviceAccount: argocd-server
       volumes:
         - name: shared-data
@@ -154,5 +157,3 @@ spec:
           volumeMounts:
             - name: shared-data
               mountPath: /shared-data
-
-      restartPolicy: Never
