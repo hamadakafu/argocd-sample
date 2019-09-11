@@ -17,6 +17,7 @@ spec:
           image: alpine:latest
           command: ["echo"] 
           args: ["fack you"]
+      restartPolicy: Never
 
 ---
 apiVersion: batch/v1

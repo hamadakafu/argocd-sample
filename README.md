@@ -57,3 +57,8 @@ github.comとかの設定をする
 
 ## sample application yaml
 [sample](https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/application.yaml)
+
+## hook
+### 同じアプリケーションは以下に置く必要がある
+### restartPolicyにAlwaysは指定できな:w
+`Never` か `OnFailure` の場合のみ可能
