@@ -18,12 +18,8 @@ data:
 
     APPLICATION={{ template "notification-and-pod.fullname" . }}
 
-    REPO_URL=$(kubectl get applications.argoproj.io sample-application -n argocd -o json | jq -r '.spec.source.repoURL')
-    TARGET_PATH=$(kubectl get applications.argoproj.io sample-application -n argocd -o json | jq -r '.spec.source.path')
     TARGET_REVISION=$(kubectl get applications.argoproj.io sample-application -n argocd -o json | jq -r '.spec.source.targetRevision')
 
     curl -X POST -d \
     '{"channel": "${channel}", "username": "gheo", "attachments": [{"title": "${title}", "text": "Application: *${APPLICATION}*\nBranch: *${TARGET_REVISION}*"}]}' \
     ${slack_url}
-
-    https://hooks.slack.com/services/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
