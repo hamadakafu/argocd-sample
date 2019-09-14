@@ -9,4 +9,3 @@ spec:
   - image: nginx:1.17
     name: pod
     resources: {}
-    fjaf: hgoe
