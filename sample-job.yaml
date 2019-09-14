@@ -1,0 +1,45 @@
+apiVersion: batch/v1 
+kind: Job
+metadata:
+  name: syncfail
+  generateName: syncfail-
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/hook: SyncFail
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  completions: 1 
+  parallelism: 1 
+  backoffLimit: 1
+  template:
+    spec:
+      serviceAccount: argocd-server
+      volumes:
+        - name: shared-data
+          emptyDir: {}
+      containers:
+        - name: kubectl
+          image: gcr.io/cloud-builders/kubectl
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              kubectl get applications.argoproj.io sample-application -n argocd \
+              -o jsonpath='{.spec.source.targetRevision}' >> \
+              /shared-data/SLACK_MESSAGE
+          volumeMounts:
+            - name: shared-data
+              mountPath: /shared-data
+        - name: slack-notify
+          image: technosophos/slack-notify
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              SLACK_MESSAGE="TargetRevision: *$(cat /shared-data/SLACK_MESSAGE)*" /slack-notify
+          env:
+            - name: SLACK_WEBHOOK
+              value: "https://hooks.slack.com/services/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"
+          volumeMounts:
+            - name: shared-data
+              mountPath: /shared-data
+
+      restartPolicy: Never

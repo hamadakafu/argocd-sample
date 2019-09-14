@@ -101,7 +101,7 @@ spec:
             - name: SLACK_TITLE
               value: PostSync
             - name: SLACK_COLOR
-              value: Good
+              value: good
           volumeMounts:
             - name: shared-data
               mountPath: /shared-data
@@ -153,9 +153,9 @@ spec:
             - name: SLACK_CHANNEL
               value: "#general"
             - name: SLACK_TITLE
-              value: SyncFailed
+              value: SyncFail
             - name: SLACK_COLOR
-              value: Danger
+              value: danger
           volumeMounts:
             - name: shared-data
               mountPath: /shared-data
