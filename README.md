@@ -66,3 +66,7 @@ github.comとかの設定をする
 syncは動かないっぽい
 hookも動かない
 
+## Prometheus
+proemtheus は kube-prometheus/manifests以下のyamlをapplyしたあと，
+サービスアカウントの権限をargocdネームスペース用に新しく更新するために，
+上書きする
