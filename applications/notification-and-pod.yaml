@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/hamadakafu/argocd-sample.git
-    targetRevision: master
+    targetRevision: dummy-branch
     path: charts/notification-and-pod
     helm:
       releaseName: notification-and-pod
