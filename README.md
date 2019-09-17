@@ -70,3 +70,8 @@ hookも動かない
 proemtheus は kube-prometheus/manifests以下のyamlをapplyしたあと，
 サービスアカウントの権限をargocdネームスペース用に新しく更新するために，
 上書きする
+`argocd`namespaceに`prometheus-k8s`RoleとRoleBindingを作成する
+
+## destinationに指定するnamespace
+helmチャートにすでに書かれているnamespaceを `destination.namespace` が上書きすることはない.
+helmチャートにすでに書かれているnamespaceが優先される

@@ -20,6 +20,6 @@ metadata:
   name: pod
 spec:
   containers:
-  - image: nginx:1.17
+  - image: nginx:1.16
     name: pod
     resources: {}
