@@ -23,8 +23,8 @@ spec:
           command: ["/bin/bash", "-c"]
           args:
             - |
-              echo -n "Applicatin: {{ template "notification-and-pod.name" . }}, " >> /shared-data/SLACK_MESSAGE && \
-              echo -n "TargetRevision: " >> /shared-data/SLACK_MESSAGE && \
+              echo -n "*Application*: {{ template "notification-and-pod.name" . }}, " >> /shared-data/SLACK_MESSAGE && \
+              echo -n "*TargetRevision*: " >> /shared-data/SLACK_MESSAGE && \
               kubectl get applications.argoproj.io sample-application -n argocd \
               -o jsonpath='{.spec.source.targetRevision}' >> /shared-data/SLACK_MESSAGE
 

@@ -4,6 +4,20 @@ metadata:
   labels:
     run: pod
   name: pod
+  namespace: argocd
+spec:
+  containers:
+  - image: nginx:1.17
+    name: pod
+    resources: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: pod
+  name: pod
 spec:
   containers:
   - image: nginx:1.17
