@@ -19,16 +19,16 @@ spec:
         - name: kubectl
           image: gcr.io/cloud-builders/kubectl
           command: ["/bin/bash", "-c"]
+              # MESSAGE=$(echo -n "Application: *{{ .Values.deployNotify.applicationName }}*") && \
+              # TARGET_REVISION=$(kubectl get applications.argoproj.io {{ .Values.deployNotify.applicationName }} -n argocd \
           args:
             - |
-              MESSAGE=$(echo -n "Application: *hoge*") \
-              # MESSAGE=$(echo -n "Application: *{{ .Values.deployNotify.applicationName }}*") \
-              MESSAGE=$(echo -n "${MESSAGE}, TargetRevision: *") \
+              MESSAGE=$(echo -n "Application: *hoge*") && \
+              MESSAGE=$(echo -n "${MESSAGE}, TargetRevision: *") && \
               TARGET_REVISION=$(kubectl get applications.argoproj.io sample-application -n argocd \
-              # TARGET_REVISION=$(kubectl get applications.argoproj.io {{ .Values.deployNotify.applicationName }} -n argocd \
-              -o jsonpath='{.spec.source.targetRevision}') \
-              MESSAGE=$(echo -n "${MESSAGE}${TARGET_REVISON}") \
-              MESSAGE=$(echo -n "${MESSAGE}*") \
+              -o jsonpath='{.spec.source.targetRevision}') && \
+              MESSAGE=$(echo -n "${MESSAGE}${TARGET_REVISION}") && \
+              MESSAGE=$(echo -n "${MESSAGE}*") && \
               curl -X POST --data-urlencode \
               "payload={\
                 \"channel\": \"${SLACK_CHANNEL}\", \
