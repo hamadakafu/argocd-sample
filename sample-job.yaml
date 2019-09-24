@@ -1,11 +1,11 @@
 apiVersion: batch/v1 
 kind: Job
 metadata:
-  name: syncfail
-  generateName: syncfail-
+  name: presync
+  generateName: presync-
   namespace: argocd
   annotations:
-    argocd.argoproj.io/hook: SyncFail
+    argocd.argoproj.io/hook: PreSync 
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
 spec:
   completions: 1 
@@ -13,33 +13,45 @@ spec:
   backoffLimit: 1
   template:
     spec:
+      restartPolicy: Never
       serviceAccount: argocd-server
-      volumes:
-        - name: shared-data
-          emptyDir: {}
       containers:
         - name: kubectl
           image: gcr.io/cloud-builders/kubectl
           command: ["/bin/bash", "-c"]
           args:
             - |
-              kubectl get applications.argoproj.io sample-application -n argocd \
-              -o jsonpath='{.spec.source.targetRevision}' >> \
-              /shared-data/SLACK_MESSAGE
-          volumeMounts:
-            - name: shared-data
-              mountPath: /shared-data
-        - name: slack-notify
-          image: technosophos/slack-notify
-          command: ["/bin/bash", "-c"]
-          args:
-            - |
-              SLACK_MESSAGE="TargetRevision: *$(cat /shared-data/SLACK_MESSAGE)*" /slack-notify
+              MESSAGE=$(echo -n "Application: *hoge*") \
+              # MESSAGE=$(echo -n "Application: *{{ .Values.deployNotify.applicationName }}*") \
+              MESSAGE=$(echo -n "${MESSAGE}, TargetRevision: *") \
+              TARGET_REVISION=$(kubectl get applications.argoproj.io sample-application -n argocd \
+              # TARGET_REVISION=$(kubectl get applications.argoproj.io {{ .Values.deployNotify.applicationName }} -n argocd \
+              -o jsonpath='{.spec.source.targetRevision}') \
+              MESSAGE=$(echo -n "${MESSAGE}${TARGET_REVISON}") \
+              MESSAGE=$(echo -n "${MESSAGE}*") \
+              curl -X POST --data-urlencode \
+              "payload={\
+                \"channel\": \"${SLACK_CHANNEL}\", \
+                \"username\": \"${SLACK_USERNAME}\", \
+                \"attachments\": [{ \
+                  \"color\": \"${SLACK_COLOR}\", \
+                  \"fields\": [ \
+                    { \
+                       \"title\": \"${SLACK_TITLE}\", \
+                       \"value\": \"${MESSAGE}\" \
+                    } \
+                  ] \
+                }] \
+              }" \
+              ${SLACK_WEBHOOK}
           env:
             - name: SLACK_WEBHOOK
               value: "https://hooks.slack.com/services/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"
-          volumeMounts:
-            - name: shared-data
-              mountPath: /shared-data
-
-      restartPolicy: Never
+            - name: SLACK_CHANNEL
+              value: "#general"
+            - name: SLACK_USERNAME
+              value: "argocd-notify-job"
+            - name: SLACK_TITLE
+              value: "PreSync"
+            - name: SLACK_COLOR
+              value: "#439FE0"

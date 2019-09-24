@@ -1,184 +1,185 @@
-apiVersion: batch/v1 
-kind: Job
-metadata:
-  generateName: presync-
-  namespace: argocd
-  annotations:
-    argocd.argoproj.io/hook: PreSync 
-    argocd.argoproj.io/hook-delete-policy: HookSucceeded
-spec:
-  completions: 1 
-  parallelism: 1 
-  backoffLimit: 1
-  template:
-    spec:
-      restartPolicy: Never
-      serviceAccount: argocd-server
-      volumes:
-        - name: shared-data
-          emptyDir: {}
-      containers:
-        - name: kubectl
-          image: gcr.io/cloud-builders/kubectl
-          command: ["/bin/bash", "-c"]
-          args:
-            - |
-              echo -n "Application: *{{ template "notification-and-pod.name" . }}*, " >> /shared-data/SLACK_MESSAGE && \
-              echo -n "TargetRevision: *" >> /shared-data/SLACK_MESSAGE && \
-              kubectl get applications.argoproj.io {{ template "notification-and-pod.name" .}} -n argocd \
-              -o jsonpath='{.spec.source.targetRevision}' >> /shared-data/targetRevision && \
-              cat /shared-data/targetRevision >> /shared-data/SLACK_MESSAGE && \
-              echo -n "*" >> /shared-data/SLACK_MESSAGE
-
-          volumeMounts:
-            - name: shared-data
-              mountPath: /shared-data
-
-        - name: slack-notify
-          image: technosophos/slack-notify
-          command: ["/bin/bash", "-c"]
-          args:
-            - |
-              if [ "master" = "$(cat /shared-data/targetRevision)" ]; then 
-                SLACK_MESSAGE=$(cat /shared-data/SLACK_MESSAGE) /slack-notify
-              else 
-                echo "Ignore targetRevision: $(cat /shared-data/targetRevision)"
-              fi
-          env:
-            - name: SLACK_WEBHOOK
-              value: "https://hooks.slack.com/services/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"
-            - name: SLACK_CHANNEL
-              value: "#general"
-            - name: SLACK_USERNAME
-              value: "argocd-notify-job"
-            - name: SLACK_TITLE
-              value: PreSync
-            - name: SLACK_COLOR
-              value: "#439FE0"
-          volumeMounts:
-            - name: shared-data
-              mountPath: /shared-data
-
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  namespace: argocd
-  generateName: postsync-
-  annotations:
-    argocd.argoproj.io/hook: PostSync
-    argocd.argoproj.io/hook-delete-policy: HookSucceeded
-spec:
-  completions: 1 
-  parallelism: 1 
-  backoffLimit: 1
-  template:
-    spec:
-      restartPolicy: Never
-      serviceAccount: argocd-server
-      volumes:
-        - name: shared-data
-          emptyDir: {}
-      containers:
-        - name: kubectl
-          image: gcr.io/cloud-builders/kubectl
-          command: ["/bin/bash", "-c"]
-          args:
-            - |
-              echo -n "Application: *{{ template "notification-and-pod.name" . }}*, " >> /shared-data/SLACK_MESSAGE && \
-              echo -n "TargetRevision: *" >> /shared-data/SLACK_MESSAGE && \
-              kubectl get applications.argoproj.io {{ template "notification-and-pod.name" . }} -n argocd \
-              -o jsonpath='{.spec.source.targetRevision}' >> /shared-data/targetRevision && \
-              cat /shared-data/targetRevision >> /shared-data/SLACK_MESSAGE && \
-              echo -n "*" >> /shared-data/SLACK_MESSAGE
-
-          volumeMounts:
-            - name: shared-data
-              mountPath: /shared-data
-
-        - name: slack-notify
-          image: technosophos/slack-notify
-          command: ["/bin/bash", "-c"]
-          args:
-            - |
-              if [ "master" = "$(cat /shared-data/targetRevision)" ]; then 
-                SLACK_MESSAGE=$(cat /shared-data/SLACK_MESSAGE) /slack-notify
-              else 
-                echo "Ignore targetRevision: $(cat /shared-data/targetRevision)"
-              fi
-          env:
-            - name: SLACK_WEBHOOK
-              value: "https://hooks.slack.com/services/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"
-            - name: SLACK_CHANNEL
-              value: "#general"
-            - name: SLACK_USERNAME
-              value: "argocd-notify-job"
-            - name: SLACK_TITLE
-              value: PostSync
-            - name: SLACK_COLOR
-              value: good
-          volumeMounts:
-            - name: shared-data
-              mountPath: /shared-data
-
----
-apiVersion: batch/v1 
-kind: Job
-metadata:
-  generateName: syncfail-
-  namespace: argocd
-  annotations:
-    argocd.argoproj.io/hook: SyncFail
-    argocd.argoproj.io/hook-delete-policy: HookSucceeded
-spec:
-  completions: 1 
-  parallelism: 1 
-  backoffLimit: 1
-  template:
-    spec:
-      restartPolicy: Never
-      serviceAccount: argocd-server
-      volumes:
-        - name: shared-data
-          emptyDir: {}
-      containers:
-        - name: kubectl
-          image: gcr.io/cloud-builders/kubectl
-          command: ["/bin/bash", "-c"]
-          args:
-            - |
-              echo -n "Application: *{{ template "notification-and-pod.name" . }}*, " >> /shared-data/SLACK_MESSAGE && \
-              echo -n "TargetRevision: *" >> /shared-data/SLACK_MESSAGE && \
-              kubectl get applications.argoproj.io {{ template "notification-and-pod.name" . }} -n argocd \
-              -o jsonpath='{.spec.source.targetRevision}' >> /shared-data/targetRevision && \
-              cat /shared-data/targetRevision >> /shared-data/SLACK_MESSAGE && \
-              echo -n "*" >> /shared-data/SLACK_MESSAGE
-
-          volumeMounts:
-            - name: shared-data
-              mountPath: /shared-data
-
-        - name: slack-notify
-          image: technosophos/slack-notify
-          command: ["/bin/bash", "-c"]
-          args:
-            - |
-              if [ "master" = "$(cat /shared-data/targetRevision)" ]; then 
-                SLACK_MESSAGE=$(cat /shared-data/SLACK_MESSAGE) /slack-notify
-              else 
-                echo "Ignore targetRevision: $(cat /shared-data/targetRevision)"
-              fi
-          env:
-            - name: SLACK_WEBHOOK
-              value: "https://hooks.slack.com/services/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"
-            - name: SLACK_CHANNEL
-              value: "#general"
-            - name: SLACK_USERNAME
-              value: "argocd-notify-job"
-            - name: SLACK_TITLE
-              value: SyncFail
-            - name: SLACK_COLOR
-              value: danger
-          volumeMounts:
-            - name: shared-data
-              mountPath: /shared-data
+# apiVersion: batch/v1 
+# kind: Job
+# metadata:
+#   generateName: presync-
+#   namespace: argocd
+#   annotations:
+#     argocd.argoproj.io/hook: PreSync 
+#     argocd.argoproj.io/hook-delete-policy: HookSucceeded
+# spec:
+#   completions: 1 
+#   parallelism: 1 
+#   backoffLimit: 1
+#   template:
+#     spec:
+#       restartPolicy: Never
+#       serviceAccount: argocd-server
+#       volumes:
+#         - name: shared-data
+#           emptyDir: {}
+#       containers:
+#         - name: kubectl
+#           image: gcr.io/cloud-builders/kubectl
+#           command: ["/bin/bash", "-c"]
+#           args:
+#             - |
+#               echo -n "Application: *{{ template "notification-and-pod.name" . }}*, " >> /shared-data/SLACK_MESSAGE && \
+#               echo -n "TargetRevision: *" >> /shared-data/SLACK_MESSAGE && \
+#               kubectl get applications.argoproj.io {{ template "notification-and-pod.name" .}} -n argocd \
+#               -o jsonpath='{.spec.source.targetRevision}' >> /shared-data/targetRevision && \
+#               cat /shared-data/targetRevision >> /shared-data/SLACK_MESSAGE && \
+#               echo -n "*" >> /shared-data/SLACK_MESSAGE
+# 
+#           volumeMounts:
+#             - name: shared-data
+#               mountPath: /shared-data
+# 
+#         - name: slack-notify
+#           image: technosophos/slack-notify
+#           command: ["/bin/bash", "-c"]
+#           args:
+#             - |
+#               if [ "master" = "$(cat /shared-data/targetRevision)" ]; then 
+#                 SLACK_MESSAGE=$(cat /shared-data/SLACK_MESSAGE) /slack-notify
+#               else 
+#                 echo "Ignore targetRevision: $(cat /shared-data/targetRevision)"
+#               fi
+#           env:
+#             - name: SLACK_WEBHOOK
+#               value: "https://hooks.slack.com/services/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"
+#             - name: SLACK_CHANNEL
+#               value: "#general"
+#             - name: SLACK_USERNAME
+#               value: "argocd-notify-job"
+#             - name: SLACK_TITLE
+#               value: PreSync
+#             - name: SLACK_COLOR
+#               value: "#439FE0"
+#           volumeMounts:
+#             - name: shared-data
+#               mountPath: /shared-data
+# 
+# ---
+# apiVersion: batch/v1
+# kind: Job
+# metadata:
+#   namespace: argocd
+#   generateName: postsync-
+#   annotations:
+#     argocd.argoproj.io/hook: PostSync
+#     argocd.argoproj.io/hook-delete-policy: HookSucceeded
+# spec:
+#   completions: 1 
+#   parallelism: 1 
+#   backoffLimit: 1
+#   template:
+#     spec:
+#       restartPolicy: Never
+#       serviceAccount: argocd-server
+#       volumes:
+#         - name: shared-data
+#           emptyDir: {}
+#       containers:
+#         - name: kubectl
+#           image: gcr.io/cloud-builders/kubectl
+#           command: ["/bin/bash", "-c"]
+#           args:
+#             - |
+#               echo -n "Application: *{{ template "notification-and-pod.name" . }}*, " >> /shared-data/SLACK_MESSAGE && \
+#               echo -n "TargetRevision: *" >> /shared-data/SLACK_MESSAGE && \
+#               kubectl get applications.argoproj.io {{ template "notification-and-pod.name" . }} -n argocd \
+#               -o jsonpath='{.spec.source.targetRevision}' >> /shared-data/targetRevision && \
+#               cat /shared-data/targetRevision >> /shared-data/SLACK_MESSAGE && \
+#               echo -n "*" >> /shared-data/SLACK_MESSAGE
+# 
+#           volumeMounts:
+#             - name: shared-data
+#               mountPath: /shared-data
+# 
+#         - name: slack-notify
+#           image: technosophos/slack-notify
+#           command: ["/bin/bash", "-c"]
+#           args:
+#             - |
+#               if [ "master" = "$(cat /shared-data/targetRevision)" ]; then 
+#                 SLACK_MESSAGE=$(cat /shared-data/SLACK_MESSAGE) /slack-notify
+#               else 
+#                 echo "Ignore targetRevision: $(cat /shared-data/targetRevision)"
+#               fi
+#           env:
+#             - name: SLACK_WEBHOOK
+#               value: "https://hooks.slack.com/services/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"
+#             - name: SLACK_CHANNEL
+#               value: "#general"
+#             - name: SLACK_USERNAME
+#               value: "argocd-notify-job"
+#             - name: SLACK_TITLE
+#               value: PostSync
+#             - name: SLACK_COLOR
+#               value: good
+#           volumeMounts:
+#             - name: shared-data
+#               mountPath: /shared-data
+# 
+# ---
+# apiVersion: batch/v1 
+# kind: Job
+# metadata:
+#   generateName: syncfail-
+#   namespace: argocd
+#   annotations:
+#     argocd.argoproj.io/hook: SyncFail
+#     argocd.argoproj.io/hook-delete-policy: HookSucceeded
+# spec:
+#   completions: 1 
+#   parallelism: 1 
+#   backoffLimit: 1
+#   template:
+#     spec:
+#       restartPolicy: Never
+#       serviceAccount: argocd-server
+#       volumes:
+#         - name: shared-data
+#           emptyDir: {}
+#       containers:
+#         - name: kubectl
+#           image: gcr.io/cloud-builders/kubectl
+#           command: ["/bin/bash", "-c"]
+#           args:
+#             - |
+#               echo -n "Application: *{{ template "notification-and-pod.name" . }}*, " >> /shared-data/SLACK_MESSAGE && \
+#               echo -n "TargetRevision: *" >> /shared-data/SLACK_MESSAGE && \
+#               kubectl get applications.argoproj.io {{ template "notification-and-pod.name" . }} -n argocd \
+#               -o jsonpath='{.spec.source.targetRevision}' >> /shared-data/targetRevision && \
+#               cat /shared-data/targetRevision >> /shared-data/SLACK_MESSAGE && \
+#               echo -n "*" >> /shared-data/SLACK_MESSAGE
+# 
+#           volumeMounts:
+#             - name: shared-data
+#               mountPath: /shared-data
+# 
+#         - name: slack-notify
+#           image: technosophos/slack-notify
+#           command: ["/bin/bash", "-c"]
+#           args:
+#             - |
+#               if [ "master" = "$(cat /shared-data/targetRevision)" ]; then 
+#                 SLACK_MESSAGE=$(cat /shared-data/SLACK_MESSAGE) /slack-notify
+#               else 
+#                 echo "Ignore targetRevision: $(cat /shared-data/targetRevision)"
+#               fi
+#           env:
+#             - name: SLACK_WEBHOOK
+#               value: "https://hooks.slack.com/services/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"
+#             - name: SLACK_CHANNEL
+#               value: "#general"
+#             - name: SLACK_USERNAME
+#               value: "argocd-notify-job"
+#             - name: SLACK_TITLE
+#               value: SyncFail
+#             - name: SLACK_COLOR
+#               value: danger
+#           volumeMounts:
+#             - name: shared-data
+#               mountPath: /shared-data
+# 
