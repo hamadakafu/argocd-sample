@@ -1,4 +1,4 @@
 deployNotify:
   enabled: true
   applicationName: notification-and-pod
-  targetRevision: master
+  targetRevision: dummy-master
