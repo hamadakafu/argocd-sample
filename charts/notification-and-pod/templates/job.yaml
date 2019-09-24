@@ -26,7 +26,7 @@ spec:
               -o jsonpath='{.spec.source.targetRevision}') && \
               MESSAGE=$(echo -n "${MESSAGE}${TARGET_REVISION}") && \
               MESSAGE=$(echo -n "${MESSAGE}*") && \
-              if [ "master" = "$(echo -n ${TARGET_REVISION})" ]; then 
+              if [ "{{ .Values.deployNotifiy.targetRevision }}" = "$(echo -n ${TARGET_REVISION})" ]; then 
                 curl -X POST --data-urlencode \
                 "payload={\
                   \"channel\": \"${SLACK_CHANNEL}\", \
@@ -86,7 +86,7 @@ spec:
               -o jsonpath='{.spec.source.targetRevision}') && \
               MESSAGE=$(echo -n "${MESSAGE}${TARGET_REVISION}") && \
               MESSAGE=$(echo -n "${MESSAGE}*") && \
-              if [ "master" = "$(echo -n ${TARGET_REVISION})" ]; then 
+              if [ "{{ .Values.deployNotifiy.targetRevision }}" = "$(echo -n ${TARGET_REVISION})" ]; then 
                 curl -X POST --data-urlencode \
                 "payload={\
                   \"channel\": \"${SLACK_CHANNEL}\", \
@@ -147,7 +147,7 @@ spec:
               -o jsonpath='{.spec.source.targetRevision}') && \
               MESSAGE=$(echo -n "${MESSAGE}${TARGET_REVISION}") && \
               MESSAGE=$(echo -n "${MESSAGE}*") && \
-              if [ "master" = "$(echo -n ${TARGET_REVISION})" ]; then 
+              if [ "{{ .Values.deployNotifiy.targetRevision }}" = "$(echo -n ${TARGET_REVISION})" ]; then 
                 curl -X POST --data-urlencode \
                 "payload={\
                   \"channel\": \"${SLACK_CHANNEL}\", \
