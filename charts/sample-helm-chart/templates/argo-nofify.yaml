@@ -21,12 +21,12 @@ spec:
       serviceAccount: argocd-server
       containers:
         - name: kubectl
-          image: gcr.io/cdp-stg/argocd-notify
+          image: kafuhamada/argo-nofify
           env:
             - name: SLACK_WEBHOOK
-              value: "https://hooks.slack.com/services/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"
+              value: "https://hooks.slack.com/services/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"
             - name: SLACK_CHANNEL
-              value: "#1_deploy_notify_cdp_dev"
+              value: "#general"
             - name: SLACK_TITLE
               value: "PostSync"
             - name: SLACK_COLOR
