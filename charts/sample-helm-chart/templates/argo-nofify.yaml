@@ -28,6 +28,6 @@ spec:
             - name: SLACK_CHANNEL
               value: "#1_deploy_notify_cdp_dev"
             - name: SLACK_TITLE
-              value: "SyncFail"
+              value: "PostSync"
             - name: SLACK_COLOR
               value: "danger"
