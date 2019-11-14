@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: server-postsync-notify-
+  namespace: argocd
+  labels:
+    app: server
+    chart: server-0.1.0
+    release: release-name
+    heritage: Tiller
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  completions: 1
+  parallelism: 1
+  backoffLimit: 1
+  template:
+    spec:
+      restartPolicy: Never
+      serviceAccount: argocd-server
+      containers:
+        - name: kubectl
+          image: gcr.io/cdp-stg/argocd-notify
+          env:
+            - name: SLACK_WEBHOOK
+              value: "https://hooks.slack.com/services/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"
+            - name: SLACK_CHANNEL
+              value: "#1_deploy_notify_cdp_dev"
+            - name: SLACK_TITLE
+              value: "SyncFail"
+            - name: SLACK_COLOR
+              value: "danger"
