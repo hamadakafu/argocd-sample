@@ -1,22 +1,23 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: notification-and-pod
-  namespace: argocd
-spec:
-  project: default
-  source:
-    repoURL: https://github.com/hamadakafu/argocd-sample.git
-    targetRevision: master
-    path: charts/notification-and-pod
-    helm:
-      releaseName: notification-and-pod
-
-  destination:
-    namespace: default
-    server: https://kubernetes.default.svc
-
-  syncPolicy:
-    automated: 
-      prune: true
-      selfHeal: true
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: notification-and-pod
+#   namespace: argocd
+# spec:
+#   project: default
+#   source:
+#     repoURL: https://github.com/hamadakafu/argocd-sample.git
+#     targetRevision: master
+#     path: charts/notification-and-pod
+#     helm:
+#       releaseName: notification-and-pod
+#
+#   destination:
+#     namespace: default
+#     server: https://kubernetes.default.svc
+#
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       selfHeal: true
+#

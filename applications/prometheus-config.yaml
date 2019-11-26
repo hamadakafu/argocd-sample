@@ -1,21 +1,22 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: prometheus-config
-  namespace: argocd
-spec:
-  project: default
-  source:
-    repoURL: https://github.com/hamadakafu/argocd-sample.git
-    targetRevision: master
-    path: charts/prometheus-config
-    helm:
-      releaseName: prometheus-config
-
-  destination:
-    namespace: argocd 
-    server: https://kubernetes.default.svc
-
-  syncPolicy:
-    automated: {}
-
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: prometheus-config
+#   namespace: argocd
+# spec:
+#   project: default
+#   source:
+#     repoURL: https://github.com/hamadakafu/argocd-sample.git
+#     targetRevision: master
+#     path: charts/prometheus-config
+#     helm:
+#       releaseName: prometheus-config
+#
+#   destination:
+#     namespace: argocd
+#     server: https://kubernetes.default.svc
+#
+#   syncPolicy:
+#     automated: {}
+#
+#
