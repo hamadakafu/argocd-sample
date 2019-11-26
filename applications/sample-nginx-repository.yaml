@@ -15,11 +15,9 @@ spec:
     helm:
       valueFiles:
         - values.yaml
-        - override.yaml
-      valuesLiteral:
-        - name: override.yaml
-          value: |
-            imageTag: 5.6
+      parameters:
+        - name: imageTag
+          value: "5.6"
 
   destination:
     namespace: default
