@@ -18,3 +18,24 @@ spec:
   syncPolicy:
     automated: {}
 
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: argocd-cm
+    app.kubernetes.io/part-of: argocd
+data:
+  # v1.3 or later use `repositories` with `type: helm`
+  repositories: |
+    - type: helm
+      url: https://raw.githubusercontent.com/hamadakafu/sample_helm_chart/master
+      name: hamadakafu
+      usernameSecret:
+        name: my-secret
+        key: username
+      passwordSecret:
+        name: my-secret
+        key: password
