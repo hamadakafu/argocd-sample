@@ -14,7 +14,7 @@ spec:
     #   releaseName: prometheus-config
     helm:
       valueFiles:
-        - value.yaml
+        - values.yaml
         - override.yaml
       valuesLiteral:
         - name: override.yaml
