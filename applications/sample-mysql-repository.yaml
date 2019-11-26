@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sample-nginx-repository
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://kubernetes-charts.storage.googleapis.com/
+    chart: mysql
+    targetRevision: 1.4.0
+    # valueを設定する
+    # helm:
+    #   releaseName: prometheus-config
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: imageTag
+          value: "5.6"
+        - name: image
+          value: "mysql"
+
+  destination:
+    namespace: default
+    server: https://kubernetes.default.svc
+
+  syncPolicy:
+    automated: {}
+
