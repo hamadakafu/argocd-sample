@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://raw.githubusercontent.com/hamadakafu/sample_helm_chart/master
     chart: sample_nginx_chart
-    targetRevision: 0.1.0
+    targetRevision: 0.2.0
     helm:
       valueFiles:
         - values.yaml
