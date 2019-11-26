@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://kubernetes-charts.storage.googleapis.com/
     chart: stable/mysql
-    targetRevision: 1.4.0
+    targetRevision: 1.3.3
     # valueを設定する
     # helm:
     #   releaseName: prometheus-config
