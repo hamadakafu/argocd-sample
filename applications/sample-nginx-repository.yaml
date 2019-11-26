@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://kubernetes-charts-incubator.storage.googleapis.com/
+    repoURL: https://kubernetes-charts.storage.googleapis.com/
     chart: stable/mysql
     targetRevision: 1.4.0
     # valueを設定する
