@@ -4,7 +4,7 @@ metadata:
   name: sample-helm-chart
   namespace: argocd
   annotations:
-    recipients.argocd-notifications.argoproj.io: slack:#general
+    not-health.recipients.argocd-notifications.argoproj.io: slack:#general
 spec:
   project: default
   source:
