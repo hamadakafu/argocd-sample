@@ -7,3 +7,4 @@ data:
   sample.file: |
     hogehoge
     hogehoge
+  sample.hogehoge: hogehoge
