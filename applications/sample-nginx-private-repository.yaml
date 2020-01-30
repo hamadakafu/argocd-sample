@@ -1,25 +1,31 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  # pr = sample nginx private repository
-  name: sample-nginx-private-repository
-  namespace: argocd
-spec:
-  project: default
-  source:
-    repoURL: https://raw.githubusercontent.com/hamadakafu/sample_helm_chart/master
-    chart: sample-nginx-chart
-    targetRevision: 0.*
-    helm:
-      valueFiles:
-        - values.yaml
-
-  destination:
-    namespace: default
-    server: https://kubernetes.default.svc
-
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   # pr = sample nginx private repository
+#   name: sample-nginx-private-repository
+#   namespace: argocd
+# spec:
+#   project: default
+#   source:
+#     # repoURL: https://raw.githubusercontent.com/hamadakafu/sample_helm_chart/master
+#     # chart: sample-nginx-chart
+#     # targetRevision: 0.*
+#     # helm:
+#     #   valueFiles:
+#     #     - values.yaml
+#     repoURL: https://github.com/hamadakafu/sample_helm_chart/-sample.git
+#     targetRevision: master
+#     path: charts/sample-helm-chart
+#     helm:
+#       releaseName: sample-helm-chart
+#
+#   destination:
+#     namespace: default
+#     server: https://kubernetes.default.svc
+#
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       selfHeal: true
+#
+#
