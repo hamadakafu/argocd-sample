@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sample-configmap
+data:
+  sample-env: hoge
+  sample.file: |
+    hogehoge
+    hogehoge

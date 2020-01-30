@@ -4,6 +4,8 @@ metadata:
   name: {{ include "sample-helm-chart.fullname" . }}
   labels:
 {{ include "sample-helm-chart.labels" . | indent 4 }}
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -29,6 +31,12 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
+          env:
+            - name: SAMPLE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: sample-configmap
+                  key: sample-env
           livenessProbe:
             httpGet:
               path: /
